@@ -53,20 +53,19 @@ taskRouter.post("/new-task", async function (req, res) {
 
     // edit task
 taskRouter.put("/new-task", async function (req, res) {
+    const createTaskId =req.userId
 
-    const updateTaskId = req.userId;
-
-    const{title, description, dueDate, userId} = req.body;
+    const {title, description, dueDate, userId} = req.body;
 
     const createTask = await taskModel.updateOne({
-    _id: userId,
-    creatorId: updateTaskId
-    }, {
-        title, 
-        description, 
+        _id: userId, // the userid will go in the json body(postman)
+        creatorId: createTaskId
+
+    },{
+        title,
+        description,
         dueDate
     })
-
     res.json({
         message: "Task updated",
         taskId: createTask._id
@@ -74,11 +73,12 @@ taskRouter.put("/new-task", async function (req, res) {
 })
 
     // delete task
-// taskRouter.post("/", async function (req, res) {
-//     res.json({
-//         message: "Task created"
-//     })
-// })
+taskRouter.delete("/new-task/:id", async function (req, res) {
+    await taskModel.findByIdAndDelete(req.params.id)
+    res.json({
+        message: "Task deleted"
+    })
+})
 
 module.exports = {
     taskRouter: taskRouter
